@@ -1,26 +1,51 @@
-# Prompt 017: CI, desktop packaging, and security review
+---
+id: "017"
+title: "CI, desktop packaging, and security review"
+stage: "release"
+dependsOn: ["001", "005", "013", "014", "015", "016"]
+tags: ["mail-clean", "ci", "packaging", "security"]
+concurrencyKey: "mail-clean-workspace"
+maxRetries: 0
+timeoutMinutes: 240
+required: true
+allowParallel: false
+---
 
-Read `README.md`, applicable `AGENTS.md` files, `development-prompts/SHARED-INSTRUCTIONS.md`, and `docs/development-status.md` if present. Inspect existing code and relevant architecture before editing.
+# CI, desktop packaging, and security review
 
-**Prerequisites:** 001, 005, 013, 014, 015, 016. Only the benchmark work in 016 is required here; its two-hour soak may remain pending.
+## Goal
 
-Complete the following work as one milestone, in the order shown. Continue between its implementation steps without requesting routine confirmation. Preserve progress after each step so interrupted work can resume. Use simulated Gmail and synthetic local files for unattended tests.
+Complete milestone 017: ci, desktop packaging, and security review. Deliver the implementation and observed verification described below, with durable progress and a truthful completion report.
 
-## Implementation
+## Context
 
-### 1. Create repeatable CI and developer checks
+Work in `/Users/manuelmendivil/Projects/mail-clean`. Read `README.md`, applicable `AGENTS.md` files, `development-prompts/SHARED-INSTRUCTIONS.md`, and `docs/development-status.md` if present. Inspect relevant existing code and architecture before editing.
 
-Add reproducible local commands and CI configuration for type/lint/build, meaningful unit/integration tests, migration fixtures, IPC checks, and a bounded performance smoke test. Keep two-hour soak as an explicit long-running workflow or command with retained artifacts. Isolate fake data and require no Google secrets. Pin tooling appropriately and account for Electron/native SQLite rebuilds. Create configuration files only; do not publish or enable remote services.
+Required earlier work: 001 — Architecture and secure desktop foundation; 005 — Secure Google sign-in and Gmail integration; 013 — Reports, account disconnect, and session closeout; 014 — Resource limits, diagnostics, and database backups; 015 — Operator usability and failure regression testing; 016 — Large-mailbox benchmarks and multi-hour validation. The YAML `dependsOn` values are the runner's scheduling contract. A failed or incomplete required dependency must not be bypassed. Execute only this task's grouped work; the control-plane runner owns dispatch of subsequent tasks. Use fake Gmail and synthetic files for unattended tests. Missing external Google setup does not prevent completing independently testable code, but must be reported as an external validation gap.
 
-### 2. Package the app and validate installation behavior
+## Allowed Writes
 
-Configure Forge packaging for the current supported OS first and document other targets as unverified until tested. Verify native SQLite bundling, preload/worker paths, app-data locations, resource packaging, and production navigation policy. Build a local unsigned test artifact when possible. Document signing/notarization/update-channel requirements with placeholders and add startup/version handling. Do not purchase certificates, upload artifacts, or publish releases.
+- Within the Mail Clean workspace: CI workflow files, local check scripts, package manifest/lockfile, Forge/build configuration, packaging assets, and application modules with concrete security or packaging defects.
+- Relevant tests/fixtures and local verification scripts; use established paths from the scaffold rather than introducing a second layout.
+- `docs/`, including `docs/development-status.md`, `docs/decisions.md`, and `docs/validation/milestone-017.md`; update relevant setup instructions when behavior changes.
+- Ignored dependency/build/test outputs and temporary synthetic application data required for this milestone. Package/lockfile changes are allowed when a required implementation or test dependency is justified.
 
-### 3. Review security boundaries and cleanup correctness
+## Forbidden Writes
 
-Inspect the implemented app and tests for broken isolation, stale approvals, remote-content execution, unsafe IPC/navigation, secret exposure, insecure token fallback, download path traversal, unbounded reads, and destructive thread/permanent-delete calls. Review all mutation paths against the README and current official Gmail requirements. Add focused regression tests for concrete findings and fix them without unrelated rewrites. Record unresolved external Google verification requirements accurately.
+- `development-prompts/queue/` and its source instructions; do not rewrite tasks to make checks pass.
+- The control-plane runner repository, unrelated projects, and unrelated user changes.
+- Real customer mailbox data, live downloaded attachments, actual credentials, or remote publication/deployment state during unattended tests.
+- Direct manual changes to `.git/` internals. Follow existing Git conventions and do not push or publish.
 
-## Acceptance and verification
+## Requirements
+
+1. **Create repeatable CI and developer checks.** Add reproducible local commands and CI configuration for type/lint/build, meaningful unit/integration tests, migration fixtures, IPC checks, and a bounded performance smoke test. Keep two-hour soak as an explicit long-running workflow or command with retained artifacts. Isolate fake data and require no Google secrets. Pin tooling appropriately and account for Electron/native SQLite rebuilds. Create configuration files only; do not publish or enable remote services.
+
+2. **Package the app and validate installation behavior.** Configure Forge packaging for the current supported OS first and document other targets as unverified until tested. Verify native SQLite bundling, preload/worker paths, app-data locations, resource packaging, and production navigation policy. Build a local unsigned test artifact when possible. Document signing/notarization/update-channel requirements with placeholders and add startup/version handling. Do not purchase certificates, upload artifacts, or publish releases.
+
+3. **Review security boundaries and cleanup correctness.** Inspect the implemented app and tests for broken isolation, stale approvals, remote-content execution, unsafe IPC/navigation, secret exposure, insecure token fallback, download path traversal, unbounded reads, and destructive thread/permanent-delete calls. Review all mutation paths against the README and current official Gmail requirements. Add focused regression tests for concrete findings and fix them without unrelated rewrites. Record unresolved external Google verification requirements accurately.
+
+## Verification
 
 1. Run the same checks locally where supported and document platform-specific omissions. Verify CI needs no live mailbox or credential, failure artifacts are redacted, and long-running tests cannot accidentally mutate Gmail. Avoid claiming an unexecuted remote CI job passed.
 
@@ -28,8 +53,15 @@ Inspect the implemented app and tests for broken isolation, stale approvals, rem
 
 3. Produce a concise review record with findings, fixes, evidence, and remaining limitations. Verify all mutations originate from valid approved messages and routine scans never retrieve attachment content. This is an engineering review, not a claim of security certification or completed Google approval.
 
-## Completion and handoff
+Run the relevant automated checks and inspect actual results. Fix reproduced defects within scope and rerun affected checks. Record commands, observed outcomes, and unperformed checks in `docs/validation/milestone-017.md`. Writing the report or starting a background process is not proof of success.
 
-Finish implementation, relevant checks, and fixes. Resolve reversible choices yourself and document material assumptions. Verify prerequisites against code and actual evidence. If unavailable credentials, signing, or other external steps prevent a check, complete independent work and record the gap accurately.
+## Completion Report
 
-Update `docs/development-status.md` with this milestone number, per-step progress, changed files, commands and actual results, decisions, blockers, and next eligible work. Summarize the result. Stop after this milestone unless the sequence runner instructed you to continue.
+Update `docs/development-status.md` using ID `017` and record per-step progress so an interrupted run can resume. Report:
+
+- What changed and the relevant code/documentation paths.
+- Commands and checks actually completed, with observed outcomes and evidence at `docs/validation/milestone-017.md`.
+- Material assumptions and separately identified external validation gaps.
+- Whether this task is complete, incomplete, or blocked, with precise reasons and resume steps. Never report success for failed or unperformed required verification.
+
+Resolve reversible implementation choices without routine confirmation. Preserve existing work and do not duplicate running jobs. Stop after reporting this task; do not enqueue, start, or implement later milestones from this runner-dispatched task.

@@ -1,6 +1,6 @@
 # Run all eligible development prompts
 
-Copy the following prompt into a task opened in the Mail Clean repository. This starts implementation only when you submit it.
+Use this only for manual single-task orchestration. For the control-plane runner, scan `development-prompts/queue/` and do not also submit this file. Copy the following prompt into a task opened in the Mail Clean repository to start manual orchestration.
 
 ```text
 Implement Mail Clean by executing the numbered Markdown prompts in development-prompts/queue/.
@@ -10,7 +10,9 @@ development-prompts/SHARED-INSTRUCTIONS.md, plus applicable AGENTS.md files.
 Inspect the working tree and existing docs/development-status.md before editing.
 
 Work through 001–018 in order. For each milestone, read its full numbered .md file from that folder,
-complete its grouped implementation steps without separate prompts, check
+use its YAML metadata and body. This manual orchestration instruction permits
+continuing after each completed milestone despite the per-file stop instruction.
+Complete its grouped implementation steps without separate prompts, check
 prerequisites against code and observed checks, implement it, verify it,
 fix relevant defects, and persist an accurate status with evidence. Continue
 into the next eligible milestone without asking whether to proceed. Do not
@@ -29,7 +31,9 @@ create other Codex tasks. Preserve unrelated user changes. Do not push or
 publish. Do not execute downloaded attachment files.
 
 If a prerequisite fails, fix a bounded defect when practical. Otherwise record
-the failure, keep dependent milestones blocked, and continue independent work.
+the failure, finish independent work within the current milestone, and keep
+dependent milestones blocked. Do not start a later numbered milestone until
+its required predecessors succeed.
 An external validation gap may coexist with completed code; label it explicitly
 and do not claim the gap is verified. When all remaining work depends on a
 blocker, stop with the exact blocker and resume instructions.
@@ -37,9 +41,8 @@ blocker, stop with the exact blocker and resume instructions.
 For long-running tests, record progress and actual outputs. Prompt 016 requires
 at least two wall-clock hours: an accelerated test or background process launch
 is not completion. If interrupted, preserve results and the resume command.
-Track benchmark and soak status separately in 016. Work on 017 may proceed
-with passing benchmarks while the soak remains incomplete; final readiness
-still requires the missing evidence.
+Track benchmark and soak status separately in 016. Both must pass before
+016 succeeds and 017 becomes eligible; a partial soak cannot satisfy dependsOn.
 Keep status current after implementation steps and during long work so a later
 task can resume from the repository. Continue within the active task while
 resources and permissions allow; do not assume you can bypass usage limits or

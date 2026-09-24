@@ -23,7 +23,7 @@ Read [SHARED-INSTRUCTIONS.md](SHARED-INSTRUCTIONS.md). Run prompts sequentially 
 | C | 010–013 | Cleanup/recovery, restoration, downloads, and closeout |
 | D | 014–018 | Resource controls, validation, packaging, and readiness evidence |
 
-These are convenience boundaries, not capacity guarantees. Prompt 016 includes at least two hours of actual simulated activity and will take longer than a short implementation task. If its soak is interrupted, retain the evidence and resume command; independent work in 017 may proceed after the benchmark checks pass. Final readiness cannot hide an incomplete soak.
+These are convenience boundaries, not capacity guarantees. Prompt 016 includes at least two hours of actual simulated activity and will take longer than a short implementation task. If its soak is interrupted, retain the evidence and resume command. The runner blocks dependent tasks until 016 succeeds; it cannot gate dependencies on a partially completed task.
 
 ## Ordered prompts
 
@@ -45,7 +45,7 @@ These are convenience boundaries, not capacity guarantees. Prompt 016 includes a
 | 014 | [Resource limits, diagnostics, and database backups](queue/014-resources-diagnostics-and-backups.md) | 002, 008, 011, 012, 013 |
 | 015 | [Operator usability and failure regression testing](queue/015-usability-and-failure-regressions.md) | 006, 008, 009, 010, 011, 012, 013, 014 |
 | 016 | [Large-mailbox benchmarks and multi-hour validation](queue/016-scale-and-multi-hour-validation.md) | 003, 008, 011, 014, 015 |
-| 017 | [CI, desktop packaging, and security review](queue/017-ci-packaging-and-security-review.md) | 001, 005, 013, 014, 015, 016. Only the benchmark work in 016 is required here; its two-hour soak may remain pending |
+| 017 | [CI, desktop packaging, and security review](queue/017-ci-packaging-and-security-review.md) | 001, 005, 013, 014, 015, 016 |
 | 018 | [End-to-end rehearsal and release readiness](queue/018-final-rehearsal-and-readiness.md) | 001, 013, 015, 016, 017 |
 
 ## Progress and readiness
@@ -53,3 +53,15 @@ These are convenience boundaries, not capacity guarantees. Prompt 016 includes a
 Use the current 001–018 milestone numbers in `docs/development-status.md`, with per-step progress for longer milestones. If an older status file exists, reconcile its results against the current prompt content rather than equating the old and new numbers.
 
 Mark completion only from actual observed results. Record simulation, real-provider, GUI, packaging, signing, and multi-hour evidence separately. Final readiness requires accurate requirement coverage and explicit remaining external steps.
+
+## Control-plane runner schema
+
+All 18 queue files follow the [prompt-file schema](../../codex-control-plane-runner/docs/prompt-file-schema.md) with explicit YAML metadata and the recommended Goal, Context, Allowed Writes, Forbidden Writes, Requirements, Verification, and Completion Report sections.
+
+Configure the runner's prompt root as `/Users/manuelmendivil/Projects/mail-clean/development-prompts/queue` and workspace as `/Users/manuelmendivil/Projects/mail-clean`. Scan only that queue directory (or its numbered `.md` glob), not the parent `development-prompts/` directory: the parent contains guides and a manual runner that are not individual tasks. No changes to the control-plane runner configuration were made here.
+
+IDs are `001`–`018`. Every task is required and depends on the preceding task plus its direct technical prerequisites. `allowParallel: false` and the shared `concurrencyKey: mail-clean-workspace` protect the common checkout. Failure, cancellation, or blocking of a required predecessor blocks downstream tasks. The agent completes one file per dispatched task and leaves scheduling to the runner.
+
+`maxRetries: 0` requests no automatic retries. `timeoutMinutes` is 240 for ordinary milestones and 360 for the two-hour soak milestone. The schema marks timeout/retry enforcement as first-pass non-goals, so these values are declared limits, not guaranteed enforcement. Resume interrupted work using recorded evidence and current code.
+
+Optional `project` and `artifact` metadata are omitted: project registry IDs and artifact roots depend on the runner configuration. Each body instead requests a milestone report under the workspace's `docs/validation/`; the absence of `artifact` metadata means the runner performs no artifact-existence check for this pack. Task completion still requires the explicit verification in the body.
