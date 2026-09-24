@@ -4,7 +4,48 @@ Mail Clean is a planned local app for supervised Gmail cleanup, including on-sit
 
 ## Status
 
-The app has not been built yet. Customer-specific filtering rules and any future AI provider still need to be chosen. The workflow and features below describe the intended app, not functionality currently available.
+**Not customer-ready.** The repository contains a source-level Electron/React foundation, secure
+typed IPC design, local SQLite bootstrap, and a simulated static operator shell. The dependency
+install, automated gates, packaged launch, and all Gmail cleanup workflows remain incomplete. The
+feature descriptions below are requirements, not claims of implemented mailbox behavior.
+
+All milestones 001–018 are currently blocked. In particular, no fake-Gmail end-to-end customer
+session, 100,000-message benchmark, two-hour soak, packaged-app rehearsal, real Google sign-in, or
+real-mailbox smoke has passed. See [release readiness](docs/release-readiness.md), the
+[milestone ledger](docs/development-status.md), and the
+[milestone-018 evidence](docs/validation/milestone-018.md) before planning any customer use.
+
+## Local development
+
+Use Node.js 24 and npm. The initial scaffold still has no lockfile: when registry access is
+available, run `npm install`, review the resolved versions, and preserve the generated
+`package-lock.json`; only then use `npm ci` for clean installs. `npm start` launches the development
+foundation shell. It is not an end-to-end demo and requires no Google account.
+
+The fast gates are `npm run typecheck`, `npm run lint`, `npm run format:check`, and `npm test`.
+`npm run package` is the exact unsigned local-package command. There is currently no `demo`,
+`benchmark`, or `soak` script; do not substitute `npm start` or a short test for those missing
+workflows. The commands and evidence that must exist before release are tracked in
+[release readiness](docs/release-readiness.md).
+
+## Operator and recovery limits
+
+Do not connect a customer account or enter a customer session with this build. The visible data is
+simulated foundation copy only; it cannot scan, approve, Trash, restore, download, report,
+disconnect, or clear a customer cache.
+
+If development is interrupted, preserve the workspace and any application data rather than
+deleting or retrying remote work manually. Resume from the milestone ledger and the relevant
+validation report. Once cleanup is implemented, recovery must use durable checkpoints, reconcile
+ambiguous remote outcomes before retry, and recheck exact approval and protection state. A restart,
+reinstall, or repeated click must never be treated as proof that a Gmail operation did or did not
+occur.
+
+Customer readiness additionally requires an owner-managed Google project and consent
+configuration, OAuth verification/security assessment as applicable, customer retention/Vault
+agreement, a separately authorized real-mailbox smoke, application signing/notarization, and the
+completed synthetic benchmark and genuine two-hour soak. None of those external or long-running
+release gates has been completed.
 
 ## Planned workflow
 
