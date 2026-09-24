@@ -61,6 +61,16 @@ Immediate permanent deletion is a later feature requiring separate, explicit app
 
 Before age-based cleanup, confirm the customer's retention requirements and whether Google Vault rules or holds apply. Deleting messages from Gmail does not necessarily remove copies retained by Vault. See [Google Vault retention](https://knowledge.workspace.google.com/vault/retention/how-retention-works).
 
+## Attachment handling and storage review
+
+Attachment contents must not be downloaded by default. Routine scans should collect only available attachment metadata, such as filename, MIME type, reported size, and the associated message ID, sender, subject, and date. Retrieve only the message structure needed to discover attachments; keep attachment-content retrieval separate from scanning.
+
+- **Optional downloads.** Let the operator explicitly download selected attachments or enable attachment downloads for a particular job. Keep this option off by default and show the expected download size when known.
+- **Largest attachments view.** Provide an Inbox-scoped review view with options to expand to other mail, filter by minimum attachment size, file type, sender, and date, and sort individual attachments from largest to smallest.
+- **Clear size information.** Distinguish individual attachment size, total attachment size per message, and estimated whole-message size. Label unavailable or estimated sizes rather than presenting whole-message size as an exact attachment size.
+- **Review before cleanup.** Show the parent message and the rule or size filter that matched. Keeping or moving a message to Trash remains subject to protection rules and approval. Make clear that message cleanup affects the email and its attachments, not just the selected attachment.
+- **Incremental results.** Discover and index attachment metadata in bounded batches, allow review while scanning continues, and show scan progress. Mark rankings as incomplete until the selected scope has been fully scanned; avoid counting a message more than once in cleanup totals when it has multiple attachments.
+
 ## Large mailboxes and long-running jobs
 
 Handling large workloads is a first-version requirement. Customer mailboxes may contain multiple gigabytes of email, thousands or more messages, and roughly 20 years of history. Scanning and cleanup must support many hours of continuous operation while keeping the interface responsive and resource usage bounded. Reliability must include recovery from interruptions, not just avoiding crashes.
@@ -82,6 +92,7 @@ Before customer use, validate these requirements with representative large datas
 - Separate customer sessions with multiple connected mailboxes.
 - Protected sender/domain lists, labels, and starred-message exceptions.
 - Sender, subject, label, and cutoff-date rules.
+- Attachment metadata without content downloads by default, optional downloads, and a largest-attachments review view.
 - Preview scans and a batch review queue with reasons.
 - Approved bulk moves to Trash and a restoration log.
 - Resumable cleanup with progress, error tracking, and a final report.
