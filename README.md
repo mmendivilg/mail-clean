@@ -13,6 +13,12 @@ The app has not been built yet. The filtering rules and AI provider still need t
 3. **Review flagged emails** in a queue, with reasons explaining why each message was flagged.
 4. **Choose what happens next:** keep a message, move it to Trash, or permanently delete it.
 
+## Planned date-based cleanup
+
+Choose a cutoff date to find and delete all emails received before that date. For example, “delete all emails older than 2014” means emails received before January 1, 2014.
+
+Matching emails will appear in the review queue, where you can keep individual messages or bulk move them to Trash or permanently delete them.
+
 ## Future plans
 
 - Allow automatic deletion for categories you trust.
